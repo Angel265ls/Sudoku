@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sudoku</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sudoku</h1>
+    <div class="content">
+      <div id="sudoku-container">
+        <table id="sudoku">
+          <!-- Sudoku board will be generated here -->
+        </table>
+      </div>
+      <div id="score-container">
+        <h2>Score</h2>
+        <table id="scoreTable">
+          <tr>
+            <th>Player</th>
+            <th>Score</th>
+          </tr>
+          <tr>
+            <td>Player 1</td>
+            <td id="playerScore">0</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <button id="solveButton" class="button">Solve</button>
+    <button id="resetButton" class="button">Reset</button>
+  </div>
+  
+  <script src="js/script.js"></script>
+</body>
+</html>
