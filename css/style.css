@@ -7,10 +7,16 @@
     border-radius: 15px;
     background-color: #FDFAE7;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding: 0 20px; 
   }
   
   .content {
     display: flex;
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
+    justify-content: center;
+    max-width: 800px; /* Ancho máximo de los elementos */
+    width: 100%; /* Permitir que los elementos se ajusten al ancho máximo */
+    margin-top: 20px; /* Espacio entre sudoku y tabla de puntuación */
   }
   
   #sudoku-container {
@@ -25,6 +31,7 @@
     border-collapse: collapse;
     font-size: 24px; /* Tamaño de fuente para celdas */
     border-radius: 15px;
+    
   }
   
   #sudoku td {
