@@ -1,216 +1,216 @@
 document.addEventListener("DOMContentLoaded", function() {
-    generateBoard();
-    
-    var solveButton = document.getElementById("solveButton");
-    solveButton.addEventListener("click", solveSudoku);
+  generarTablero();
   
-    var resetButton = document.getElementById("resetButton");
-    resetButton.addEventListener("click", resetSudoku);
-  });
+  var botonResolver = document.getElementById("botonResolver");
+  botonResolver.addEventListener("click", resolverSudoku);
+
+  var botonReiniciar = document.getElementById("botonReiniciar");
+  botonReiniciar.addEventListener("click", reiniciarSudoku);
+});
+
+function generarTablero() {
+  var tabla = document.getElementById("sudoku");
+  var rompecabezas = generarSudoku();
   
-  function generateBoard() {
-    var table = document.getElementById("sudoku");
-    var puzzle = generateSudoku();
-    
-    for (var i = 0; i < 9; i++) {
-      var row = table.insertRow();
-      for (var j = 0; j < 9; j++) {
-        var cell = row.insertCell();
-        cell.setAttribute("contenteditable", true);
-        cell.setAttribute("oninput", "checkCell(this)");
-        if (puzzle[i][j] !== 0) {
-          cell.textContent = puzzle[i][j];
-          cell.classList.add("readonly");
-        }
+  for (var i = 0; i < 9; i++) {
+    var fila = tabla.insertRow();
+    for (var j = 0; j < 9; j++) {
+      var celda = fila.insertCell();
+      celda.setAttribute("contenteditable", true);
+      celda.setAttribute("oninput", "verificarCelda(this)");
+      if (rompecabezas[i][j] !== 0) {
+        celda.textContent = rompecabezas[i][j];
+        celda.classList.add("sololectura");
       }
     }
   }
-  
-  
-  function generateSudoku() {
-    var puzzle = [];
-    for (var i = 0; i < 9; i++) {
-      puzzle[i] = [];
-      for (var j = 0; j < 9; j++) {
-        puzzle[i][j] = 0;
+}
+
+
+function generarSudoku() {
+  var rompecabezas = [];
+  for (var i = 0; i < 9; i++) {
+    rompecabezas[i] = [];
+    for (var j = 0; j < 9; j++) {
+      rompecabezas[i][j] = 0;
+    }
+  }
+  llenarSudoku(rompecabezas);
+  return rompecabezas;
+}
+
+function llenarSudoku(rompecabezas) {
+  var numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  barajarArray(numeros);
+  for (var i = 0; i < 9; i++) {
+    for (var j = 0; j < 9; j++) {
+      var numIndex = (i * 3 + Math.floor(i / 3) + j) % 9;
+      var num = numeros[numIndex];
+      if (esValido(rompecabezas, i, j, num)) {
+        rompecabezas[i][j] = num;
       }
     }
-    fillSudoku(puzzle);
-    return puzzle;
   }
-  
-  function fillSudoku(puzzle) {
-    var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    shuffleArray(numbers);
-    for (var i = 0; i < 9; i++) {
-      for (var j = 0; j < 9; j++) {
-        var numIndex = (i * 3 + Math.floor(i / 3) + j) % 9;
-        var num = numbers[numIndex];
-        if (isValid(puzzle, i, j, num)) {
-          puzzle[i][j] = num;
-        }
-      }
-    }
-    removeRandomCells(puzzle);
+  eliminarCeldasAleatorias(rompecabezas);
+}
+
+function barajarArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  
-  function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
+}
+
+function eliminarCeldasAleatorias(rompecabezas) {
+  var numEliminar = Math.floor(Math.random() * 10) + 40; 
+  for (var k = 0; k < numEliminar; k++) {
+    var fila = Math.floor(Math.random() * 9);
+    var columna = Math.floor(Math.random() * 9);
+    rompecabezas[fila][columna] = 0;
   }
-  
-  function removeRandomCells(puzzle) {
-    var numToRemove = Math.floor(Math.random() * 10) + 40; // Remove between 40 to 49 cells
-    for (var k = 0; k < numToRemove; k++) {
-      var row = Math.floor(Math.random() * 9);
-      var col = Math.floor(Math.random() * 9);
-      puzzle[row][col] = 0;
+}
+
+function resolverSudoku() {
+  var tabla = document.getElementById("sudoku");
+  var rompecabezas = [];
+  for (var i = 0; i < 9; i++) {
+    rompecabezas[i] = [];
+    for (var j = 0; j < 9; j++) {
+      var celda = tabla.rows[i].cells[j];
+      rompecabezas[i][j] = parseInt(celda.textContent) || 0;
     }
   }
-  
-  function solveSudoku() {
-    var table = document.getElementById("sudoku");
-    var puzzle = [];
-    for (var i = 0; i < 9; i++) {
-      puzzle[i] = [];
-      for (var j = 0; j < 9; j++) {
-        var cell = table.rows[i].cells[j];
-        puzzle[i][j] = parseInt(cell.textContent) || 0;
-      }
-    }
-    if (solve(puzzle)) {
-      updateBoard(puzzle);
-    } else {
-      alert("No solution exists for this Sudoku puzzle!");
-    }
+  if (resolver(rompecabezas)) {
+    actualizarTablero(rompecabezas);
+  } else {
+    alert("¡No existe solución para este rompecabezas de Sudoku!");
   }
-  
-  function solve(puzzle) {
-    for (var i = 0; i < 9; i++) {
-      for (var j = 0; j < 9; j++) {
-        if (puzzle[i][j] === 0) {
-          for (var num = 1; num <= 9; num++) {
-            if (isValid(puzzle, i, j, num)) {
-              puzzle[i][j] = num;
-              if (solve(puzzle)) {
-                return true;
-              }
-              puzzle[i][j] = 0;
+}
+
+function resolver(rompecabezas) {
+  for (var i = 0; i < 9; i++) {
+    for (var j = 0; j < 9; j++) {
+      if (rompecabezas[i][j] === 0) {
+        for (var num = 1; num <= 9; num++) {
+          if (esValido(rompecabezas, i, j, num)) {
+            rompecabezas[i][j] = num;
+            if (resolver(rompecabezas)) {
+              return true;
             }
+            rompecabezas[i][j] = 0;
           }
-          return false;
         }
-      }
-    }
-    return true;
-  }
-  
-  function isValid(puzzle, row, col, num) {
-    for (var i = 0; i < 9; i++) {
-      if (puzzle[row][i] === num || puzzle[i][col] === num || puzzle[Math.floor(row / 3) * 3 + Math.floor(i / 3)][Math.floor(col / 3) * 3 + i % 3] === num) {
         return false;
       }
     }
-    return true;
   }
-  
-  function checkCell(cell) {
-    var row = cell.parentNode.rowIndex;
-    var col = cell.cellIndex;
-    var value = parseInt(cell.textContent);
+  return true;
+}
+
+function esValido(rompecabezas, fila, columna, num) {
+  for (var i = 0; i < 9; i++) {
+    if (rompecabezas[fila][i] === num || rompecabezas[i][columna] === num || rompecabezas[Math.floor(fila / 3) * 3 + Math.floor(i / 3)][Math.floor(columna / 3) * 3 + i % 3] === num) {
+      return false;
+    }
+  }
+  return true;
+}
+
+ function verificarCelda(celda) {
+    var fila = celda.parentNode.rowIndex;
+    var columna = celda.cellIndex;
+    var valor = parseInt(celda.textContent);
     
-    if (isNaN(value) || value < 1 || value > 9) {
-      cell.textContent = "";
+    if (isNaN(valor) || valor < 1 || valor > 9) {
+      celda.textContent = "";
       return;
     }
   
     for (var i = 0; i < 9; i++) {
-      if (i !== col && cell.parentNode.parentNode.rows[row].cells[i].textContent === cell.textContent) {
-        cell.classList.add("highlight");
+      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {
+        celda.classList.add("resaltar");
         return;
       }
     }
   
     for (var j = 0; j < 9; j++) {
-      if (j !== row && cell.parentNode.parentNode.rows[j].cells[col].textContent === cell.textContent) {
-        cell.classList.add("highlight");
+      if (j !== fila && celda.parentNode.parentNode.rows[j].cells[columna].textContent === celda.textContent) {
+        celda.classList.add("resaltar");
         return;
       }
     }
   
-    var startRow = Math.floor(row / 3) * 3;
-    var startCol = Math.floor(col / 3) * 3;
-    for (var m = startRow; m < startRow + 3; m++) {
-      for (var n = startCol; n < startCol + 3; n++) {
-        if ((m !== row || n !== col) && cell.parentNode.parentNode.rows[m].cells[n].textContent === cell.textContent) {
-          cell.classList.add("highlight");
+    var filaInicio = Math.floor(fila / 3) * 3;
+    var columnaInicio = Math.floor(columna / 3) * 3;
+    for (var m = filaInicio; m < filaInicio + 3; m++) {
+      for (var n = columnaInicio; n < columnaInicio + 3; n++) {
+        if ((m !== fila || n !== columna) && celda.parentNode.parentNode.rows[m].cells[n].textContent === celda.textContent) {
+          celda.classList.add("resaltar");
           return;
         }
       }
     }
   
-    cell.classList.remove("highlight");
+    celda.classList.remove("resaltar");
   }
   
-  function resetSudoku() {
-    var table = document.getElementById("sudoku");
-    while (table.rows.length > 0) {
-      table.deleteRow(0);
+  function reiniciarSudoku() {
+    var tabla = document.getElementById("sudoku");
+    while (tabla.rows.length > 0) {
+      tabla.deleteRow(0);
     }
-    generateBoard();
+    generarTablero();
   }
 
-  function checkCell(cell) {
-    var row = cell.parentNode.rowIndex;
-    var col = cell.cellIndex;
-    var value = parseInt(cell.textContent);
+  function verificarCelda(celda) {
+    var fila = celda.parentNode.rowIndex;
+    var columna = celda.cellIndex;
+    var valor = parseInt(celda.textContent);
     
-    if (isNaN(value) || value < 1 || value > 9) {
-      cell.textContent = "";
+    if (isNaN(valor) || valor < 1 || valor > 9) {
+      celda.textContent = "";
       return;
     }
   
     for (var i = 0; i < 9; i++) {
-      if (i !== col && cell.parentNode.parentNode.rows[row].cells[i].textContent === cell.textContent) {
-        cell.classList.add("highlight");
+      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {
+        celda.classList.add("resaltar");
         return;
       }
     }
   
     for (var j = 0; j < 9; j++) {
-      if (j !== row && cell.parentNode.parentNode.rows[j].cells[col].textContent === cell.textContent) {
-        cell.classList.add("highlight");
+      if (j !== fila && celda.parentNode.parentNode.rows[j].cells[columna].textContent === celda.textContent) {
+        celda.classList.add("resaltar");
         return;
       }
     }
   
-    var startRow = Math.floor(row / 3) * 3;
-    var startCol = Math.floor(col / 3) * 3;
-    for (var m = startRow; m < startRow + 3; m++) {
-      for (var n = startCol; n < startCol + 3; n++) {
-        if ((m !== row || n !== col) && cell.parentNode.parentNode.rows[m].cells[n].textContent === cell.textContent) {
-          cell.classList.add("highlight");
+    var filaInicio = Math.floor(fila / 3) * 3;
+    var columnaInicio = Math.floor(columna / 3) * 3;
+    for (var m = filaInicio; m < filaInicio + 3; m++) {
+      for (var n = columnaInicio; n < columnaInicio + 3; n++) {
+        if ((m !== fila || n !== columna) && celda.parentNode.parentNode.rows[m].cells[n].textContent === celda.textContent) {
+          celda.classList.add("resaltar");
           return;
         }
       }
     }
   
-    cell.classList.remove("highlight");
+    celda.classList.remove("resaltar");
   }
   
-  function resetSudoku() {
-    var table = document.getElementById("sudoku");
-    while (table.rows.length > 0) {
-      table.deleteRow(0);
+  function reiniciarSudoku() {
+    var tabla = document.getElementById("sudoku");
+    while (tabla.rows.length > 0) {
+      tabla.deleteRow(0);
     }
-    generateBoard();
+    generarTablero();
   }
   
-  function incrementScore() {
-    playerScore++;
-    playerScoreElement.textContent = playerScore;
+  function incrementarPuntuacion() {
+    puntuacionJugador++;
+    elementoPuntuacionJugador.textContent = puntuacionJugador;
   }
 
   

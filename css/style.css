@@ -10,38 +10,38 @@
     padding: 0 20px; 
   }
   
-  .content {
+.content {
     display: flex;
-    flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
+    flex-wrap: wrap;
     justify-content: center;
-    max-width: 800px; /* Ancho máximo de los elementos */
-    width: 100%; /* Permitir que los elementos se ajusten al ancho máximo */
-    margin-top: 20px; /* Espacio entre sudoku y tabla de puntuación */
+    max-width: 800px; 
+    width: 100%; 
+    margin-top: 20px; 
   }
   
-  #sudoku-container {
-    margin-right: 20px; /* Espacio entre sudoku y tabla de puntuación */
+#sudoku-container {
+    margin-right: 20px; 
   }
   
-  #score-container {
+#score-container {
     flex: 1;
   }
   
-  #sudoku {
+#sudoku {
     border-collapse: collapse;
-    font-size: 24px; /* Tamaño de fuente para celdas */
+    font-size: 24px; 
     border-radius: 15px;
     
   }
   
-  #sudoku td {
-    width: 50px; /* Ancho de celdas */
-    height: 50px; /* Alto de celdas */
+#sudoku td {
+    width: 50px; 
+    height: 50px; 
     text-align: center;
     border-radius: 15px ;
   }
   
-  button {
+button {
     margin-top: 10px;
     padding: 10px 20px;
     font-size: 16px;
@@ -55,11 +55,11 @@
   }
 
   
-  button:hover {
+button:hover {
     background-color: #E8A75B !important;
   }
   
-  button:active {
+button:active {
     transform: translateY(2px) !important;
   }
   
