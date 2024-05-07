@@ -18,9 +18,9 @@ function generarTablero() {
       var celda = fila.insertCell();
       if (rompecabezas[i][j] !== 0) {
         celda.textContent = rompecabezas[i][j];
-        celda.classList.add("sololectura"); // Agregar clase para celdas solo lectura
+        celda.classList.add("sololectura"); 
       } else {
-        celda.setAttribute("contenteditable", true); // Habilitar edición para celdas vacías
+        celda.setAttribute("contenteditable", true); 
         celda.setAttribute("oninput", "verificarCelda(this)");
       }
     }
@@ -72,8 +72,7 @@ function eliminarCeldasAleatorias(rompecabezas) {
 function resolverSudoku() {
   var tabla = document.getElementById("sudoku");
   var rompecabezas = [];
-  var sudokuCompleto = true; // Variable para verificar si el sudoku está completo
-  
+  var sudokuCompleto = true; 
   for (var i = 0; i < 9; i++) {
     rompecabezas[i] = [];
     for (var j = 0; j < 9; j++) {
@@ -81,15 +80,15 @@ function resolverSudoku() {
       var valor = parseInt(celda.textContent) || 0;
       rompecabezas[i][j] = valor;
       if (valor === 0) {
-        sudokuCompleto = false; // Si hay alguna celda vacía, el sudoku no está completo
+        sudokuCompleto = false; 
       }
     }
   }
   
-  if (sudokuCompleto) { // Si el sudoku está completo, intenta resolverlo
+  if (sudokuCompleto) { 
     if (resolver(rompecabezas)) {
       actualizarTablero(rompecabezas);
-      if (esValido(rompecabezas, 0, 0, rompecabezas[0][0])) { // Verificar si el sudoku resuelto es válido
+      if (esValido(rompecabezas, 0, 0, rompecabezas[0][0])) { 
         alert("¡Felicidades! Has ganado el Sudoku.");
       } else {
         alert("El Sudoku resuelto no es válido.");
@@ -104,15 +103,14 @@ function resolverSudoku() {
 
 
 function verificarSudokuCompleto(rompecabezas) {
-  // Verifica si todas las celdas contienen valores válidos
   for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
       if (rompecabezas[i][j] === 0) {
-        return false; // Si hay una celda vacía, el Sudoku no está completo
+        return false; 
       }
     }
   }
-  return true; // Si no hay celdas vacías, el Sudoku está completo
+  return true; 
 }
 
 
