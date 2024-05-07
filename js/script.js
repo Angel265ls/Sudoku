@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {            //Dentro de la funcion documemto se ejecutan generar tabla y los botones
   generarTablero();
   
   var botonResolver = document.getElementById("botonResolver");
@@ -14,7 +14,7 @@ function generarTablero() {
   
   for (var i = 0; i < 9; i++) {
     var fila = tabla.insertRow();
-    for (var j = 0; j < 9; j++) {
+    for (var j = 0; j < 9; j++) {               //Genera el tablero llamando la tabla y hace que el tablero sea solo lectura y no editable
       var celda = fila.insertCell();
       if (rompecabezas[i][j] !== 0) {
         celda.textContent = rompecabezas[i][j];
@@ -31,7 +31,7 @@ function generarSudoku() {
   var rompecabezas = [];
   for (var i = 0; i < 9; i++) {
     rompecabezas[i] = [];
-    for (var j = 0; j < 9; j++) {
+    for (var j = 0; j < 9; j++) {     //Genera el sudoku haciendo una matriz con numeros unicamente del 1-9
       rompecabezas[i][j] = 0;
     }
   }
@@ -43,8 +43,8 @@ function llenarSudoku(rompecabezas) {
   var numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   barajarArray(numeros);
   for (var i = 0; i < 9; i++) {
-    for (var j = 0; j < 9; j++) {
-      var numIndex = (i * 3 + Math.floor(i / 3) + j) % 9;
+    for (var j = 0; j < 9; j++) {   
+      var numIndex = (i * 3 + Math.floor(i / 3) + j) % 9;       //son las reglas del sudoku, tambien llama mas funciones para seguir las reglas
       var num = numeros[numIndex];
       if (esValido(rompecabezas, i, j, num)) {
         rompecabezas[i][j] = num;
@@ -56,7 +56,7 @@ function llenarSudoku(rompecabezas) {
 
 function barajarArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
+    var j = Math.floor(Math.random() * (i + 1));    //Esta funcion toma una array para barajarlo aleatoriamente
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
@@ -64,7 +64,7 @@ function barajarArray(array) {
 function eliminarCeldasAleatorias(rompecabezas) {
   var numEliminar = Math.floor(Math.random() * 10) + 40; 
   for (var k = 0; k < numEliminar; k++) {
-    var fila = Math.floor(Math.random() * 9);
+    var fila = Math.floor(Math.random() * 9);             //Toma celdas de el sudoku generado aleatoriamente para borrarles
     var columna = Math.floor(Math.random() * 9);
     rompecabezas[fila][columna] = 0;
   }
@@ -74,7 +74,7 @@ function resolverSudoku() {
   var rompecabezas = [];
   var sudokuCompleto = true; 
   for (var i = 0; i < 9; i++) {
-    rompecabezas[i] = [];
+    rompecabezas[i] = [];                                 //Es la funcion que verifica si se completo el sudoku y arroja alertas de que se gano
     for (var j = 0; j < 9; j++) {
       var celda = tabla.rows[i].cells[j];
       var valor = parseInt(celda.textContent) || 0;
@@ -105,7 +105,7 @@ function resolverSudoku() {
 function verificarSudokuCompleto(rompecabezas) {
   for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
-      if (rompecabezas[i][j] === 0) {
+      if (rompecabezas[i][j] === 0) {             //Verifica que los valores del usuario sean validos
         return false; 
       }
     }
@@ -121,7 +121,7 @@ function resolver(rompecabezas) {
         for (var num = 1; num <= 9; num++) {
           if (esValido(rompecabezas, i, j, num)) {
             rompecabezas[i][j] = num;
-            if (resolver(rompecabezas)) {
+            if (resolver(rompecabezas)) {                   //es la funcion que resuelve el sudoku automaticamente
               return true;
             }
             rompecabezas[i][j] = 0;
@@ -138,7 +138,7 @@ function esValido(rompecabezas, fila, columna, num) {
   for (var i = 0; i < 9; i++) {
     if (rompecabezas[fila][i] === num || rompecabezas[i][columna] === num || rompecabezas[Math.floor(fila / 3) * 3 + Math.floor(i / 3)][Math.floor(columna / 3) * 3 + i % 3] === num) {
       return false;
-    }
+    }                             //determina si el numero en la celda es valido para el sudoku
   }
   return true;
 }
@@ -154,11 +154,11 @@ function esValido(rompecabezas, fila, columna, num) {
     }
   
     for (var i = 0; i < 9; i++) {
-      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {
+      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {     
         celda.classList.add("resaltar");
         return;
       }
-    }
+    }                                                         //Valida filas y columnas para ver si los valores proporcionados son validos
   
     for (var j = 0; j < 9; j++) {
       if (j !== fila && celda.parentNode.parentNode.rows[j].cells[columna].textContent === celda.textContent) {
@@ -183,60 +183,15 @@ function esValido(rompecabezas, fila, columna, num) {
   
   function reiniciarSudoku() {
     var tabla = document.getElementById("sudoku");
-    while (tabla.rows.length > 0) {
+    while (tabla.rows.length > 0) {                          //Reinicia todas las celdas del sudoku
       tabla.deleteRow(0);
     }
     generarTablero();
   }
 
-  function verificarCelda(celda) {
-    var fila = celda.parentNode.rowIndex;
-    var columna = celda.cellIndex;
-    var valor = parseInt(celda.textContent);
-    
-    if (isNaN(valor) || valor < 1 || valor > 9) {
-      celda.textContent = "";
-      return;
-    }
-  
-    for (var i = 0; i < 9; i++) {
-      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {
-        celda.classList.add("resaltar");
-        return;
-      }
-    }
-  
-    for (var j = 0; j < 9; j++) {
-      if (j !== fila && celda.parentNode.parentNode.rows[j].cells[columna].textContent === celda.textContent) {
-        celda.classList.add("resaltar");
-        return;
-      }
-    }
-  
-    var filaInicio = Math.floor(fila / 3) * 3;
-    var columnaInicio = Math.floor(columna / 3) * 3;
-    for (var m = filaInicio; m < filaInicio + 3; m++) {
-      for (var n = columnaInicio; n < columnaInicio + 3; n++) {
-        if ((m !== fila || n !== columna) && celda.parentNode.parentNode.rows[m].cells[n].textContent === celda.textContent) {
-          celda.classList.add("resaltar");
-          return;
-        }
-      }
-    }
-  
-    celda.classList.remove("resaltar");
-  }
-  
-  function reiniciarSudoku() {
-    var tabla = document.getElementById("sudoku");
-    while (tabla.rows.length > 0) {
-      tabla.deleteRow(0);
-    }
-    generarTablero();
-  }
   
   function incrementarPuntuacion() {
-    puntuacionJugador++;
+    puntuacionJugador++;                                      //Incompleto
     elementoPuntuacionJugador.textContent = puntuacionJugador;
   }
 
