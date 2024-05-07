@@ -152,6 +152,9 @@ function esValido(rompecabezas, fila, columna, num) {
       celda.textContent = "";
       return;
     }
+
+    celda.classList.add("numero-ingresado");
+
   
     for (var i = 0; i < 9; i++) {
       if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {     
