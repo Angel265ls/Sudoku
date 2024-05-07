@@ -16,16 +16,16 @@ function generarTablero() {
     var fila = tabla.insertRow();
     for (var j = 0; j < 9; j++) {
       var celda = fila.insertCell();
-      celda.setAttribute("contenteditable", true);
-      celda.setAttribute("oninput", "verificarCelda(this)");
       if (rompecabezas[i][j] !== 0) {
         celda.textContent = rompecabezas[i][j];
-        celda.classList.add("sololectura");
+        celda.classList.add("sololectura"); // Agregar clase para celdas solo lectura
+      } else {
+        celda.setAttribute("contenteditable", true); // Habilitar edición para celdas vacías
+        celda.setAttribute("oninput", "verificarCelda(this)");
       }
     }
   }
 }
-
 
 function generarSudoku() {
   var rompecabezas = [];
@@ -69,23 +69,52 @@ function eliminarCeldasAleatorias(rompecabezas) {
     rompecabezas[fila][columna] = 0;
   }
 }
-
 function resolverSudoku() {
   var tabla = document.getElementById("sudoku");
   var rompecabezas = [];
+  var sudokuCompleto = true; // Variable para verificar si el sudoku está completo
+  
   for (var i = 0; i < 9; i++) {
     rompecabezas[i] = [];
     for (var j = 0; j < 9; j++) {
       var celda = tabla.rows[i].cells[j];
-      rompecabezas[i][j] = parseInt(celda.textContent) || 0;
+      var valor = parseInt(celda.textContent) || 0;
+      rompecabezas[i][j] = valor;
+      if (valor === 0) {
+        sudokuCompleto = false; // Si hay alguna celda vacía, el sudoku no está completo
+      }
     }
   }
-  if (resolver(rompecabezas)) {
-    actualizarTablero(rompecabezas);
+  
+  if (sudokuCompleto) { // Si el sudoku está completo, intenta resolverlo
+    if (resolver(rompecabezas)) {
+      actualizarTablero(rompecabezas);
+      if (esValido(rompecabezas, 0, 0, rompecabezas[0][0])) { // Verificar si el sudoku resuelto es válido
+        alert("¡Felicidades! Has ganado el Sudoku.");
+      } else {
+        alert("El Sudoku resuelto no es válido.");
+      }
+    } else {
+      alert("¡No existe solución para este rompecabezas de Sudoku!");
+    }
   } else {
-    alert("¡No existe solución para este rompecabezas de Sudoku!");
+    alert("El sudoku está incompleto. Por favor, llénelo antes de intentar resolverlo.");
   }
 }
+
+
+function verificarSudokuCompleto(rompecabezas) {
+  // Verifica si todas las celdas contienen valores válidos
+  for (var i = 0; i < 9; i++) {
+    for (var j = 0; j < 9; j++) {
+      if (rompecabezas[i][j] === 0) {
+        return false; // Si hay una celda vacía, el Sudoku no está completo
+      }
+    }
+  }
+  return true; // Si no hay celdas vacías, el Sudoku está completo
+}
+
 
 function resolver(rompecabezas) {
   for (var i = 0; i < 9; i++) {
