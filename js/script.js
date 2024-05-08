@@ -143,46 +143,42 @@ function esValido(rompecabezas, fila, columna, num) {
   return true;
 }
 
- function verificarCelda(celda) {
-    var fila = celda.parentNode.rowIndex;
-    var columna = celda.cellIndex;
-    var valor = parseInt(celda.textContent);
-    
-    if (isNaN(valor) || valor < 1 || valor > 9) {
-      celda.textContent = "";
+function verificarCelda(celda) {
+  var fila = celda.parentNode.rowIndex;
+  var columna = celda.cellIndex;
+  var valor = parseInt(celda.textContent);
+  
+  if (isNaN(valor) || valor < 1 || valor > 9) {                         // Verificar si el valor es un número válido entre 1 y 9
+
+    celda.textContent = ""; 
+    return;
+  }
+  celda.classList.add("numero-ingresado");
+
+  celda.classList.remove("resaltar");
+  for (var i = 0; i < 9; i++) {
+    if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {
+      celda.classList.add("resaltar");
       return;
     }
-
-    celda.classList.add("numero-ingresado");
-
-  
-    for (var i = 0; i < 9; i++) {
-      if (i !== columna && celda.parentNode.parentNode.rows[fila].cells[i].textContent === celda.textContent) {     
-        celda.classList.add("resaltar");
-        return;
-      }
-    }                                                         //Valida filas y columnas para ver si los valores proporcionados son validos
-  
-    for (var j = 0; j < 9; j++) {
-      if (j !== fila && celda.parentNode.parentNode.rows[j].cells[columna].textContent === celda.textContent) {
-        celda.classList.add("resaltar");
-        return;
-      }
+    if (i !== fila && celda.parentNode.parentNode.rows[i].cells[columna].textContent === celda.textContent) {
+      celda.classList.add("resaltar");
+      return;
     }
-  
-    var filaInicio = Math.floor(fila / 3) * 3;
-    var columnaInicio = Math.floor(columna / 3) * 3;
-    for (var m = filaInicio; m < filaInicio + 3; m++) {
-      for (var n = columnaInicio; n < columnaInicio + 3; n++) {
-        if ((m !== fila || n !== columna) && celda.parentNode.parentNode.rows[m].cells[n].textContent === celda.textContent) {
-          celda.classList.add("resaltar");
-          return;
-        }
-      }
-    }
-  
-    celda.classList.remove("resaltar");
   }
+
+  var filaInicio = Math.floor(fila / 3) * 3;
+  var columnaInicio = Math.floor(columna / 3) * 3;
+  for (var m = filaInicio; m < filaInicio + 3; m++) {
+    for (var n = columnaInicio; n < columnaInicio + 3; n++) {
+      if ((m !== fila || n !== columna) && celda.parentNode.parentNode.rows[m].cells[n].textContent === celda.textContent) {
+        celda.classList.add("resaltar");
+        return;
+      }
+    }
+  }
+}
+
   
   function reiniciarSudoku() {
     var tabla = document.getElementById("sudoku");
